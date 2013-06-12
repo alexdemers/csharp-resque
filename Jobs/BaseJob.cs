@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using TagMyDoc.Jobs;
 
 namespace Resque.Jobs
 {

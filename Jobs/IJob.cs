@@ -1,4 +1,4 @@
-﻿namespace TagMyDoc.Jobs
+﻿namespace Resque.Jobs
 {
     public interface IJob
     {
