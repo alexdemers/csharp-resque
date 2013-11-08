@@ -30,10 +30,9 @@ namespace Resque
             Id = string.Format("{0}:{1}:{2}", Dns.GetHostName(), System.Diagnostics.Process.GetCurrentProcess().Id, String.Join(",", _queues));
         }
 
-        public Worker(string queue)
+        public Worker(string queue) :
+            this(new[] { queue })
         {
-            _queues = queue == "*" ? Resque.Queues().ToArray() : new[] { queue };
-            Id = string.Format("{0}:{1}:{2}", Dns.GetHostName(), System.Diagnostics.Process.GetCurrentProcess().Id, String.Join(",", _queues));
         }
 
         public void Work(int interval)
@@ -124,7 +123,7 @@ namespace Resque
 
         public Job Reserve()
         {
-            foreach (var queue in _queues)
+            foreach (var queue in Queues())
             {
                 Log("Checking " + queue);
                 var job = global::Resque.Job.Reserve(queue);
@@ -136,17 +135,14 @@ namespace Resque
             return null;
         }
 
-        public string[] Queues(bool fetch = false)
+        public string[] Queues()
         {
-            if (_queues.Contains("*") || !fetch)
-            {
-                return _queues;
-            }
+            return _queues.Contains("*") ? FetchQueues() : _queues;
+        }
 
-            var queues = Resque.Queues().ToArray();
-            Array.Sort(queues);
-
-            return queues;
+        public string[] FetchQueues()
+        {
+            return Resque.Queues().ToArray();
         }
 
         private void Startup()
