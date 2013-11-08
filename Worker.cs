@@ -241,7 +241,7 @@ namespace Resque
                     Console.WriteLine("*** " + message);
                     break;
                 case LogType.Verbose:
-                    Console.WriteLine(string.Format("[{0}] {1}", new DateTime().ToString(), message));
+                    Console.WriteLine(string.Format("[{0}] {1}", DateTime.UtcNow.ToString("u"), message));
                     break;
             }
         }
