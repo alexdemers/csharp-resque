@@ -22,11 +22,13 @@ namespace Resque
         private bool _shutDown;
         private bool _paused;
         private Job _currentJob;
+        private int _maxThreads;
         public string Id { get; set; }
 
-        public Worker(string[] queues)
+        public Worker(string[] queues, int maxThreads = -1)
         {
             _queues = queues;
+            _maxThreads = maxThreads;
             Id = string.Format("{0}:{1}:{2}", Dns.GetHostName(), System.Diagnostics.Process.GetCurrentProcess().Id, String.Join(",", _queues));
         }
 
@@ -63,6 +65,11 @@ namespace Resque
                             if (job != null)
                             {
                                 jobs.Add(job);
+                            }
+
+                            if (_maxThreads >= 0 && jobs.Count >= _maxThreads)
+                            {
+                                break;
                             }
                         } while (job != null);
                     }
