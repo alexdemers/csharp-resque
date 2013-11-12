@@ -12,6 +12,9 @@ namespace Resque
 
     public class Resque
     {
+        private const string RESQUE_QUEUES_KEY = "resque:queues";
+        private const string RESQUE_QUEUE_KEY_PREFIX = "resque:queue:";
+
         public const double Version = 1.0;
         public static Dictionary<string, Type> RegisteredJobs = new Dictionary<string, Type>();
         public static PooledRedisClientManager PooledRedisClientManager;
@@ -26,8 +29,8 @@ namespace Resque
         {
             using (var redis = PooledRedisClientManager.GetClient())
             {
-                redis.AddItemToSet("resque:queue", queue);
-                redis.PushItemToList("resque:queue:" + queue, item.ToString());
+                redis.AddItemToSet(RESQUE_QUEUES_KEY, queue);
+                redis.PushItemToList(RESQUE_QUEUE_KEY_PREFIX + queue, item.ToString());
             }
         }
 
@@ -35,7 +38,7 @@ namespace Resque
         {
             using (var redis = PooledRedisClientManager.GetClient())
             {
-                var data = redis.PopItemFromList("resque:queue:" + queue);
+                var data = redis.PopItemFromList(RESQUE_QUEUE_KEY_PREFIX + queue);
                 if (data == null) return null;
                 return JsonConvert.DeserializeObject<JObject>(data);
             }
@@ -45,7 +48,7 @@ namespace Resque
         {
             using (var redis = PooledRedisClientManager.GetClient())
             {
-                return redis.GetListCount("resque:queue:" + queue);
+                return redis.GetListCount(RESQUE_QUEUE_KEY_PREFIX + queue);
             }
         }
 
@@ -79,7 +82,7 @@ namespace Resque
         {
             using (var redis = PooledRedisClientManager.GetClient())
             {
-                return redis.GetAllItemsFromSet("resque:queues");
+                return redis.GetAllItemsFromSet(RESQUE_QUEUES_KEY);
             }
         }
     }
