@@ -62,13 +62,17 @@ namespace Resque
 
         public void UpdateStatus(int status)
         {
-            var statusInstance = new Status(Payload["id"].ToString());
-            statusInstance.Update(status);
+            var payloadId = Payload["id"];
+            if (payloadId != null)
+            {
+                var statusInstance = new Status(payloadId.ToString());
+                statusInstance.Update(status);
+            }  
         } 
 
         public JObject GetArgs()
         {
-            return Payload["args"] == null ? new JObject() : Payload["args"][0].ToObject<JObject>();
+            return Payload["args"] == null ? new JObject() : JObject.Parse((string)Payload["args"][0]);
         }
 
         public object GetInstance()
