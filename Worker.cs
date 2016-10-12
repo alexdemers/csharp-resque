@@ -265,7 +265,7 @@ namespace Resque
 
         private static string CurrentTimeFormatted()
         {
-            return DateTime.Now.ToString("ddd MMM dd hh:mm:ss zzzz yyyy");
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zz00");
         }
     }
 }
