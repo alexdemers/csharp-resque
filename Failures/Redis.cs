@@ -16,6 +16,7 @@ namespace Resque.Failures
                            {
                                new JProperty("failed_at", DateTime.Now),
                                new JProperty("payload", Payload),
+                               new JProperty("exception", Exception.GetType().ToString()),
                                new JProperty("error", Exception.Message),
                                new JProperty("backtrace", Exception.ToString()),
                                new JProperty("worker", Worker.ToString()),
