@@ -40,7 +40,6 @@ namespace Resque
 
             var data = new JObject
                            {
-                               new JProperty("id", id),
                                new JProperty("class", className),
                                new JProperty("args", args)
                            };
