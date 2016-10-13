@@ -30,7 +30,7 @@ namespace Resque
             using (var redis = PooledRedisClientManager.GetClient())
             {
                 redis.AddItemToSet(RESQUE_QUEUES_KEY, queue);
-                redis.PushItemToList(RESQUE_QUEUE_KEY_PREFIX + queue, item.ToString());
+                redis.PushItemToList(RESQUE_QUEUE_KEY_PREFIX + queue, item.ToString(Formatting.None));
             }
         }
 
