@@ -68,6 +68,23 @@ namespace Resque
             return result;
         }
 
+        public static bool Enqueue(string queue, string className, JArray arguments, bool trackStatus = false)
+        {
+            var argumentsObject = new JObject
+            {
+                { "Values", arguments }
+            };
+
+            var result = Job.Create(queue, className, arguments, trackStatus);
+
+            if (result)
+            {
+                Event.OnAfterEnqueue(className, argumentsObject, queue, EventArgs.Empty);
+            }
+
+            return result;
+        }
+
         public static Job Reserve(string queue)
         {
             return Job.Reserve(queue);
