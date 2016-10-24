@@ -40,7 +40,6 @@ namespace Resque
 
             var data = new JObject
                            {
-                               new JProperty("id", id),
                                new JProperty("class", className),
                                new JProperty("args", args)
                            };
@@ -72,7 +71,7 @@ namespace Resque
 
         public JObject GetArgs()
         {
-            return Payload["args"] == null ? new JObject() : JObject.Parse((string)Payload["args"][0]);
+            return new JObject { {"Values", Payload["args"]} };
         }
 
         public object GetInstance()

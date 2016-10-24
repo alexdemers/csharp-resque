@@ -6,6 +6,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Resque.Jobs;
+using System.Text;
 
 namespace Resque
 {
@@ -209,14 +210,15 @@ namespace Resque
             job.UpdateStatus(Status.StatusRunning);
 
             var data = new JObject
-                           {
-                               new JProperty("queue", job.Queue),
-                               new JProperty("run_at", CurrentTimeFormatted()),
-                               new JProperty("payload", job.Payload)
-                           };
+            {
+                { "queue", job.Queue },
+                { "run_at", CurrentTimeFormatted() },
+                { "payload", job.Payload }
+            };
+
             using (var redis = Resque.PooledRedisClientManager.GetClient())
             {
-                redis.Set("resque:worker:" + job.Worker, data.ToString());
+                redis.Set("resque:worker:" + job.Worker, Encoding.ASCII.GetBytes(data.ToString(Formatting.None)));
             }
         }
 
@@ -265,7 +267,7 @@ namespace Resque
 
         private static string CurrentTimeFormatted()
         {
-            return DateTime.Now.ToString("ddd MMM dd hh:mm:ss zzzz yyyy");
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zz00");
         }
     }
 }

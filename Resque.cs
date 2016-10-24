@@ -30,7 +30,7 @@ namespace Resque
             using (var redis = PooledRedisClientManager.GetClient())
             {
                 redis.AddItemToSet(RESQUE_QUEUES_KEY, queue);
-                redis.PushItemToList(RESQUE_QUEUE_KEY_PREFIX + queue, item.ToString());
+                redis.PushItemToList(RESQUE_QUEUE_KEY_PREFIX + queue, item.ToString(Formatting.None));
             }
         }
 
@@ -63,6 +63,23 @@ namespace Resque
             if (result)
             {
                 Event.OnAfterEnqueue(className, arguments, queue, EventArgs.Empty);
+            }
+
+            return result;
+        }
+
+        public static bool Enqueue(string queue, string className, JArray arguments, bool trackStatus = false)
+        {
+            var argumentsObject = new JObject
+            {
+                { "Values", arguments }
+            };
+
+            var result = Job.Create(queue, className, arguments, trackStatus);
+
+            if (result)
+            {
+                Event.OnAfterEnqueue(className, argumentsObject, queue, EventArgs.Empty);
             }
 
             return result;
