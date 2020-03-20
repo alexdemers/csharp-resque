@@ -38,7 +38,7 @@ namespace Resque
         {
             using (var redis = PooledRedisClientManager.GetClient())
             {
-                var data = redis.PopItemFromList(RESQUE_QUEUE_KEY_PREFIX + queue);
+                var data = redis.RemoveStartFromList(RESQUE_QUEUE_KEY_PREFIX + queue);
                 if (data == null) return null;
                 return JsonConvert.DeserializeObject<JObject>(data);
             }
