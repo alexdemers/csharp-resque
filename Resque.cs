@@ -19,10 +19,15 @@ namespace Resque
         public static Dictionary<string, Type> RegisteredJobs = new Dictionary<string, Type>();
         public static PooledRedisClientManager PooledRedisClientManager;
 
-        public static void SetRedis(string hostname = "localhost", int port = 6379, long database = 0)
+        public static void SetRedis(string hostname = "localhost", int port = 6379, long database = 0, string password = "")
         {
-            PooledRedisClientManager = new PooledRedisClientManager(new[] {hostname + ":" + port},
-                                                                    new[] {hostname + ":" + port}, database);
+            string pwPrefix = "";
+            if (password.Length > 0)
+            {
+                pwPrefix = password + "@";
+            }
+            PooledRedisClientManager = new PooledRedisClientManager(new[] {pwPrefix + hostname + ":" + port},
+                                                                    new[] {pwPrefix + hostname + ":" + port}, database);
         }
 
         public static void Push(string queue, JObject item)
